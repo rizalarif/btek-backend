@@ -52,7 +52,7 @@ exports.readUserById = async(req, res) => {
 
 exports.updateUserById = async(req, res) => {
   try {
-    const update = await userModel.updateUser(req.params.id, req.body);
+    const update = await userModel.updateUserById(req.params.id, req.body);
     const user = update.rows[0];
     return res.json({
       success: true,
@@ -69,7 +69,7 @@ exports.updateUserById = async(req, res) => {
 
 exports.deleteUserById = async(req, res) => {
   try {
-    const user = await userModel.deleteUser(req.params.id);
+    const user = await userModel.deleteUserById(req.params.id);
     return res.json({
       success: true,
       message: "Succesfully user deleted",
