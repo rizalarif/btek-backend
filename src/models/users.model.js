@@ -8,8 +8,14 @@ exports.insertUser = (data) => {
   return db.query(sql, params);
 };
 
-exports.selectAllUsers = () => {
-  const sql = `SELECT * FROM ${table}`;
+exports.selectAllUsers = (data) => {
+  const sql = `SELECT * FROM "${table}" WHERE "${data.searchBy}" LIKE '%${data.search}%' ORDER BY "${data.sortBy}" ${data.reverse? "DESC" : "ASC"} LIMIT $1 OFFSET $2`;
+  const params= [data.limit, data.offset];
+  return db.query(sql, params);
+};
+
+exports.selectAll = (data) => {
+  const sql = `SELECT * FROM ${table} WHERE "${data.searchBy}" LIKE '%${data.search}%'`;
   return db.query(sql);
 };
 
