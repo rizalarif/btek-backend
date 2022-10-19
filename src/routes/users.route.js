@@ -9,7 +9,7 @@ users.get("/",paging,check, userController.readAllUsers);
 users.get("/:id", paramUUID, check, userController.readUserById);
 users.post("/", basicUserCreds, check,userController.createUsers);
 users.put("/:id", paramUUID, basicUserCreds, check, userController.updateUserById);
-users.delete("/:id", userController.deleteUserById);
+users.delete("/:id",userController.deleteUserById);
 
 
 
