@@ -16,7 +16,15 @@ exports.selectProfileByUserId = (id) => {
 };
 
 exports.updateProfileByUserId = (id,data) => {
-  const sql = `UPDATE "${table}" SET "fullName"=$2, "picture"=$3, "birthDate"=$4 WHERE "userId"=$1 RETURNING *`;
-  const params = [id, data.fullName, data.picture, data.birthDate];
+  const column = Object.keys(data);
+  const val = Object.values(data);
+  
+  const conditionalSql = [];
+  column.forEach((col, i)=>{
+    conditionalSql.push(`"${col}"=$${2+i}`);
+  });
+
+  const sql = `UPDATE "${table}" SET ${conditionalSql.join(", ")} WHERE "userId"=$1 RETURNING *`;
+  const params = [id, ...val];
   return db.query(sql, params);
 };

@@ -1,5 +1,5 @@
 const profileModel = require("../models/profile.model");
-const profile = require("../routes/profile.route");
+
 
 exports.readProfileById = async (req, res) => {
   try{
