@@ -8,6 +8,10 @@ exports.basicUserCreds = [
     .isStrongPassword({minUppercase: 1}).withMessage("Password must contain uppercase 1 or more")    
 ];
 
+exports.validEmail = [
+  body("email").isEmail().withMessage("Email is Invalid")
+];
+
 exports.paramUUID = [
   param("id").isUUID(4).withMessage("invalid ID")
 ];
