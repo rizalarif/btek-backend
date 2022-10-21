@@ -58,3 +58,45 @@ exports.register = async (req, res) => {
     });
   }
 };
+
+exports.forgotPassword = async(req, res) => {
+  try {
+    const find = await userModel.findEmail(req.body);
+    if(!find.rows[0]){
+      throw new Error("Email not Found!");
+    }
+    const insert = await userModel.insertEmail(req.body);
+    return res.json({
+      success: true,
+      message: "Email sent",
+      results: insert.rows[0]
+    });
+  } catch(err) {
+    return res.status(500).json({
+      success: false,
+      message: "Error: "+err.message
+    });
+  }
+};
+
+exports.resetPassword = async(req, res) => {
+  try {
+    req.body.newPassword = await argon.hash(req.body.newPassword);
+    req.body.confirmPassword = await argon.hash(req.body.confirmPassword);
+    const find = await userModel.findsecretCode(req.body);
+    if(!find.rows[0]){
+      throw new Error("Code not Match or not Found!");
+    }
+    const insert = await userModel.insertPassword(req.body);
+    return res.json({
+      success: true,
+      message: "New password sent",
+      results: insert.rows[0]
+    });
+  } catch(err) {
+    return res.status(500).json({
+      success: false,
+      message: "Error: "+err.message
+    });
+  }
+};

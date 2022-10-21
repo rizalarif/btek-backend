@@ -45,3 +45,13 @@ exports.check = (req, res, next)=>{
   }
   return next();
 };
+
+exports.passwordConfirmation = [
+  body("newPassword").isLength({min: 8}).withMessage("Password Confirmation is not Good!"),
+  body("confirmPassword").custom((value,{ req }) => {
+    if ( value !== req.body.newPassword ) {
+      throw new Error("Password does not match");
+    }
+    return true;
+  })
+];

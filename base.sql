@@ -32,7 +32,7 @@ ALTER TABLE "profile" ADD PRIMARY KEY ("id");
 
 CREATE TABLE "forgotPassword"(
   "id" VARCHAR(255) DEFAULT uuid_generate_v4(),
-  "secretCode" VARCHAR(255),
+  "secretCode" VARCHAR(255) DEFAULT uuid_generate_v4(),
   "email" VARCHAR(255),
   "userId" VARCHAR(255),
   "newPassword" VARCHAR(255),
