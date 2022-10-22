@@ -1,5 +1,6 @@
 const userModel = require("../models/users.model");
 const profileModel = require("../models/profile.model");
+const forgotPasswordModel = require("../models/forgotPassword.model");
 const argon = require("argon2");
 const jwt = require("jsonwebtoken");
 
@@ -59,44 +60,68 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.forgotPassword = async(req, res) => {
-  try {
-    const find = await userModel.findEmail(req.body);
-    if(!find.rows[0]){
-      throw new Error("Email not Found!");
+exports.forgotPassword = async (req, res) => {
+  try{
+    const { customAlphabet } = await import("nanoid");
+    const nanoid = customAlphabet("0123456789", 6);
+    req.body.code = nanoid();
+
+    const user = await userModel.selectUserByEmail(req.body.email);
+    if(user.rowCount){
+      const selectedUser = user.rows[0];
+      req.body.userId = selectedUser.id;
+
+      const forgot = await forgotPasswordModel.insertForgotPassword(req.body);
+
+      // email message send (node-mailer)
+
+      if(forgot.rowCount){
+        return res.json({
+          succes : true,
+          message : "Forgot password request has been sent!"
+        });
+      }
+    }else{
+      return res.status(400).json({
+        succes : false,
+        message : "Email not Found!"
+      });
     }
-    const insert = await userModel.insertEmail(req.body);
-    return res.json({
-      success: true,
-      message: "Email sent",
-      results: insert.rows[0]
-    });
-  } catch(err) {
+  }catch(err){
     return res.status(500).json({
       success: false,
-      message: "Error: "+err.message
+      message: "Error : "+err.message
     });
   }
 };
-
-exports.resetPassword = async(req, res) => {
-  try {
-    req.body.newPassword = await argon.hash(req.body.newPassword);
-    req.body.confirmPassword = await argon.hash(req.body.confirmPassword);
-    const find = await userModel.findsecretCode(req.body);
-    if(!find.rows[0]){
-      throw new Error("Code not Match or not Found!");
+  
+exports.resetPassword = async (req, res) => {
+  try{
+    const user = await forgotPasswordModel.selectForgotPassword(req.body);
+    if(user.rowCount){
+      const selectedUser = user.rows[0];
+      req.body.password = await argon.hash(req.body.newPassword);
+      const updatePassword = await userModel.updateUserById(selectedUser.userId, req.body);
+      if(updatePassword.rowCount){
+        return res.json({
+          succes : true,
+          message : "Reset password Success!"
+        });
+      }
+      return res.status(500).json({
+        succes : true,
+        message : "Unexpected error on updating data!"
+      });
+    }else{
+      return res.status(400).json({
+        succes : false,
+        message : "Email or code cannot be indetified!"
+      });
     }
-    const insert = await userModel.insertPassword(req.body);
-    return res.json({
-      success: true,
-      message: "New password sent",
-      results: insert.rows[0]
-    });
-  } catch(err) {
+  }catch(err){
     return res.status(500).json({
       success: false,
-      message: "Error: "+err.message
+      message: "Error : "+err.message
     });
   }
 };

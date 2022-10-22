@@ -1,5 +1,4 @@
 const db = require("../helpers/db");
-
 const table = "profile";
 
 exports.insertProfile = (data) => {
