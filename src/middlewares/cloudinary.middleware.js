@@ -1,6 +1,6 @@
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const { randomString } = require("../utils");
+const { randomString } = require("../../utils");
 
 const extGenerator = (mimetype) => {
   const mime = ["image/jpeg", "image/png", "image/webp"];
