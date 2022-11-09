@@ -9,9 +9,9 @@ const extGenerator = (mimetype) => {
 };
 
 cloudinary.config({
-  cloud_name: "dranuuxv4",
-  api_key: "421116746575329",
-  api_secret: "IuUfT6mE9tJGesbxVGW_TPZj53c"
+  cloud_name: "dy6kothls",
+  api_key: "683746525321814",
+  api_secret: "XGZt9yZi7roCd__qcILIJzb-HPE"
 });
 
 const storage = new CloudinaryStorage({
