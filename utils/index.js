@@ -4,3 +4,4 @@ exports.randomString = async (length, customCharacter) => {
   const nanoId = customAlphabet(character, 10);
   return nanoId(length);
 };
+
